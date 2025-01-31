@@ -1,42 +1,42 @@
-import { useState } from 'react';
-import Board from './components/Board';
+import { useState } from 'react'
+import Board from './components/Board'
 
 const initialBoard = [
   ['', '', ''],
   ['', '', ''],
   ['', '', '']
-];
+]
 
-function App() {
-  const [board, setBoard] = useState(initialBoard);
-  const [currentPlayer, setCurrentPlayer] = useState<'X' | 'O'>('X');
-  const [winner, setWinner] = useState<'X' | 'O' | 'Draw' | null>(null);
+function App () {
+  const [board, setBoard] = useState(initialBoard)
+  const [currentPlayer, setCurrentPlayer] = useState<'X' | 'O'>('X')
+  const [winner, setWinner] = useState<'X' | 'O' | 'Draw' | null>(null)
 
   const handleCellClick = (row: number, col: number) => {
     // Prevent moves if there's a winner or the cell is already filled
-    if (winner || board[row][col] !== '') return;
+    if (winner || board[row][col] !== '') return
 
     // Create a new board state with the move applied
     const newBoard = board.map((r, rowIndex) =>
       r.map((cell, colIndex) => {
         if (rowIndex === row && colIndex === col) {
-          return currentPlayer;
+          return currentPlayer
         }
-        return cell;
+        return cell
       })
-    );
-    setBoard(newBoard);
+    )
+    setBoard(newBoard)
 
     // Check win conditions
     if (checkWin(newBoard, currentPlayer)) {
-      setWinner(currentPlayer);
+      setWinner(currentPlayer)
     } else if (checkDraw(newBoard)) {
-      setWinner('Draw');
+      setWinner('Draw')
     } else {
       // Toggle player turn
-      setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
+      setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X')
     }
-  };
+  }
 
   // Check rows, columns, and diagonals for a win
   const checkWin = (board: string[][], player: string) => {
@@ -46,54 +46,59 @@ function App() {
         board[i][1] === player &&
         board[i][2] === player
       )
-        return true;
+        return true
       if (
         board[0][i] === player &&
         board[1][i] === player &&
         board[2][i] === player
       )
-        return true;
+        return true
     }
     if (
       board[0][0] === player &&
       board[1][1] === player &&
       board[2][2] === player
     )
-      return true;
+      return true
     if (
       board[0][2] === player &&
       board[1][1] === player &&
       board[2][0] === player
     )
-      return true;
-    return false;
-  };
+      return true
+    return false
+  }
 
   // Check if every cell is filled
   const checkDraw = (board: string[][]) => {
-    return board.every((row) => row.every((cell) => cell !== ''));
-  };
+    return board.every(row => row.every(cell => cell !== ''))
+  }
 
   const resetGame = () => {
-    setBoard(initialBoard);
-    setCurrentPlayer('X');
-    setWinner(null);
-  };
+    setBoard(initialBoard)
+    setCurrentPlayer('X')
+    setWinner(null)
+  }
 
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
       <h1>Tic Tac Toe</h1>
       {winner ? (
-        <h2>{winner === 'Draw' ? 'Game is a draw!' : `Player ${winner} wins!`}</h2>
+        <h2>
+          {winner === 'Draw' ? 'Game is a draw!' : `Player ${winner} wins!`}
+        </h2>
       ) : (
         <h2>Current Turn: {currentPlayer}</h2>
       )}
       <Board board={board} onCellClick={handleCellClick} />
-      <button onClick={resetGame} style={{ marginTop: '20px', padding: '10px 20px' }}>
+      <button
+        onClick={resetGame}
+        style={{ marginTop: '20px', padding: '10px 20px' }}
+      >
         Reset Game
       </button>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
