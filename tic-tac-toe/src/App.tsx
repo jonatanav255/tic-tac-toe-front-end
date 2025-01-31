@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react'
 import Board from './components/Board'
 
-
 type Player = 'X' | 'O'
 type Winner = Player | 'draw' | null
 
-
-const initialBoard: string [][] = [
+const initialBoard: string[][] = [
   ['', '', ''],
   ['', '', ''],
   ['', '', '']
@@ -17,7 +15,7 @@ function App() {
   const [currentPlayer, setCurrentPlayer] = useState<Player>('X')
   const [winner, setWinner] = useState<Winner>(null)
   const [playerSymbol, setPlayerSymbol] = useState<Player | null>(null)
-  const [socket, setSocket] = useState<WebSocket |null>(null)
+  const [socket, setSocket] = useState<WebSocket | null>(null)
 
   useEffect(() => {
     // Create the WebSocket connection to the server
@@ -28,7 +26,7 @@ function App() {
       console.log('Connected to the WebSocket server')
     }
 
-    ws.onmessage = (event) => {
+    ws.onmessage = (event: MessageEvent) => {
       // Parse the incoming message from the server
       const data = JSON.parse(event.data)
       console.log('Received:', data)
@@ -40,6 +38,7 @@ function App() {
       } else if (data.type === 'start') {
         setBoard(data.board)
         setCurrentPlayer(data.currentPlayer)
+        setWinner(null) // ensure winner is cleared
       } else if (data.type === 'update') {
         setBoard(data.board)
         setCurrentPlayer(data.currentPlayer)
@@ -77,11 +76,14 @@ function App() {
     }
   }
 
+  // Instead of just resetting local state, send a reset command to the server.
   const resetGame = () => {
-    // Optionally reset local state (your server may handle full resets on disconnect)
-    setBoard(initialBoard)
-    setCurrentPlayer('X')
-    setWinner(null)
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      const resetMessage = {
+        type: 'reset'
+      }
+      socket.send(JSON.stringify(resetMessage))
+    }
   }
 
   return (
