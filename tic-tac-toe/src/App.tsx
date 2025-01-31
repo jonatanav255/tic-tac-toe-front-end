@@ -1,100 +1,100 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Board from './components/Board'
 
-const initialBoard = [
+
+type Player = 'X' | 'O'
+type Winner = Player | 'draw' | null
+
+
+const initialBoard: string [][] = [
   ['', '', ''],
   ['', '', ''],
   ['', '', '']
 ]
 
-function App () {
-  const [board, setBoard] = useState(initialBoard)
-  const [currentPlayer, setCurrentPlayer] = useState<'X' | 'O'>('X')
-  const [winner, setWinner] = useState<'X' | 'O' | 'Draw' | null>(null)
+function App() {
+  const [board, setBoard] = useState<string[][]>(initialBoard)
+  const [currentPlayer, setCurrentPlayer] = useState<Player>('X')
+  const [winner, setWinner] = useState<Winner>(null)
+  const [playerSymbol, setPlayerSymbol] = useState<Player | null>(null)
+  const [socket, setSocket] = useState<WebSocket |null>(null)
+
+  useEffect(() => {
+    // Create the WebSocket connection to the server
+    const ws = new WebSocket('ws://localhost:8080')
+    setSocket(ws)
+
+    ws.onopen = () => {
+      console.log('Connected to the WebSocket server')
+    }
+
+    ws.onmessage = (event) => {
+      // Parse the incoming message from the server
+      const data = JSON.parse(event.data)
+      console.log('Received:', data)
+
+      // Handle different message types
+      if (data.type === 'welcome') {
+        // Store the player's symbol (X or O)
+        setPlayerSymbol(data.player)
+      } else if (data.type === 'start') {
+        setBoard(data.board)
+        setCurrentPlayer(data.currentPlayer)
+      } else if (data.type === 'update') {
+        setBoard(data.board)
+        setCurrentPlayer(data.currentPlayer)
+      } else if (data.type === 'gameOver') {
+        setBoard(data.board)
+        setWinner(data.winner)
+      } else if (data.type === 'error') {
+        alert(data.message)
+      } else if (data.type === 'notification') {
+        alert(data.message)
+      }
+    }
+
+    ws.onclose = () => {
+      console.log('Disconnected from WebSocket server')
+    }
+
+    // Clean up the connection when the component unmounts
+    return () => {
+      ws.close()
+    }
+  }, [])
 
   const handleCellClick = (row: number, col: number) => {
-    // Prevent moves if there's a winner or the cell is already filled
-    if (winner || board[row][col] !== '') return
+    if (winner) return // Do nothing if the game is already over
 
-    // Create a new board state with the move applied
-    const newBoard = board.map((r, rowIndex) =>
-      r.map((cell, colIndex) => {
-        if (rowIndex === row && colIndex === col) {
-          return currentPlayer
-        }
-        return cell
-      })
-    )
-    setBoard(newBoard)
-
-    // Check win conditions
-    if (checkWin(newBoard, currentPlayer)) {
-      setWinner(currentPlayer)
-    } else if (checkDraw(newBoard)) {
-      setWinner('Draw')
-    } else {
-      // Toggle player turn
-      setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X')
+    // Send a "move" message to the server
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      const moveMessage = {
+        type: 'move',
+        row: row,
+        col: col
+      }
+      socket.send(JSON.stringify(moveMessage))
     }
-  }
-
-  // Check rows, columns, and diagonals for a win
-  const checkWin = (board: string[][], player: string) => {
-    for (let i = 0; i < 3; i++) {
-      if (
-        board[i][0] === player &&
-        board[i][1] === player &&
-        board[i][2] === player
-      )
-        return true
-      if (
-        board[0][i] === player &&
-        board[1][i] === player &&
-        board[2][i] === player
-      )
-        return true
-    }
-    if (
-      board[0][0] === player &&
-      board[1][1] === player &&
-      board[2][2] === player
-    )
-      return true
-    if (
-      board[0][2] === player &&
-      board[1][1] === player &&
-      board[2][0] === player
-    )
-      return true
-    return false
-  }
-
-  // Check if every cell is filled
-  const checkDraw = (board: string[][]) => {
-    return board.every(row => row.every(cell => cell !== ''))
   }
 
   const resetGame = () => {
+    // Optionally reset local state (your server may handle full resets on disconnect)
     setBoard(initialBoard)
     setCurrentPlayer('X')
     setWinner(null)
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
       <h1>Tic Tac Toe</h1>
+      {playerSymbol && <p>You are player {playerSymbol}</p>}
       {winner ? (
-        <h2>
-          {winner === 'Draw' ? 'Game is a draw!' : `Player ${winner} wins!`}
-        </h2>
+        <h2>{winner === 'draw' ? 'Game is a draw!' : `Player ${winner} wins!`}</h2>
       ) : (
         <h2>Current Turn: {currentPlayer}</h2>
       )}
       <Board board={board} onCellClick={handleCellClick} />
-      <button
-        onClick={resetGame}
-        style={{ marginTop: '20px', padding: '10px 20px' }}
-      >
+      <button onClick={resetGame} style={{ marginTop: '20px', padding: '10px 20px' }}>
         Reset Game
       </button>
     </div>

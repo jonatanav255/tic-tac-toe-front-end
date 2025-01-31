@@ -1,12 +1,13 @@
 import Cell from './Cell'
 
-interface BoardProps {
-  board: string[][]
+interface BoardProps  {
+
+  board: string [][],
   onCellClick: (row: number, col: number) => void
 }
-function Board ({ board, onCellClick }: BoardProps) {
+function Board({ board, onCellClick } : BoardProps) {
   return (
-    <div style={{ display: 'inline-block' }}>
+    <div>
       {board.map((row, rowIndex) => (
         <div key={rowIndex} style={{ display: 'flex' }}>
           {row.map((cell, colIndex) => (
