@@ -9,10 +9,10 @@ const initialBoard = [
 
 function App() {
   const [board, setBoard] = useState(initialBoard);
-  const [currentPlayer, setCurrentPlayer] = useState('X');
-  const [winner, setWinner] = useState(null);
+  const [currentPlayer, setCurrentPlayer] = useState<'X' | 'O'>('X');
+  const [winner, setWinner] = useState<'X' | 'O' | 'Draw' | null>(null);
 
-  const handleCellClick = (row, col) => {
+  const handleCellClick = (row: number, col: number) => {
     // Prevent moves if there's a winner or the cell is already filled
     if (winner || board[row][col] !== '') return;
 
@@ -39,7 +39,7 @@ function App() {
   };
 
   // Check rows, columns, and diagonals for a win
-  const checkWin = (board, player) => {
+  const checkWin = (board: string[][], player: string) => {
     for (let i = 0; i < 3; i++) {
       if (
         board[i][0] === player &&
@@ -70,7 +70,7 @@ function App() {
   };
 
   // Check if every cell is filled
-  const checkDraw = (board) => {
+  const checkDraw = (board: string[][]) => {
     return board.every((row) => row.every((cell) => cell !== ''));
   };
 

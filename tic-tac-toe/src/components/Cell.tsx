@@ -1,4 +1,9 @@
-function Cell ({ value, onClick }) {
+interface CellBoard {
+  value: string
+  onClick: () => void
+}
+
+function Cell ({ value, onClick }: CellBoard) {
   const style = {
     width: '80px',
     height: '80px',

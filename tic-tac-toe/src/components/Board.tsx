@@ -1,6 +1,10 @@
 import Cell from './Cell'
 
-function Board ({ board, onCellClick }) {
+interface BoardProps {
+  board: string[][]
+  onCellClick: (row: number, col: number) => void
+}
+function Board ({ board, onCellClick }: BoardProps) {
   return (
     <div style={{ display: 'inline-block' }}>
       {board.map((row, rowIndex) => (
