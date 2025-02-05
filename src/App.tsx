@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react'
 import Board from './components/Board'
 
+// Assuming you're using Vite, you can access environment variables via import.meta.env
+const wsEndpoint = import.meta.env.VITE_WS_ENDPOINT || 'ws://localhost:8080'
+
 type Player = 'X' | 'O'
 type Winner = Player | 'draw' | null
 
@@ -10,7 +13,7 @@ const initialBoard: string[][] = [
   ['', '', '']
 ]
 
-function App() {
+function App () {
   const [board, setBoard] = useState<string[][]>(initialBoard)
   const [currentPlayer, setCurrentPlayer] = useState<Player>('X')
   const [winner, setWinner] = useState<Winner>(null)
@@ -18,8 +21,8 @@ function App() {
   const [socket, setSocket] = useState<WebSocket | null>(null)
 
   useEffect(() => {
-    // Create the WebSocket connection to the server
-    const ws = new WebSocket('ws://localhost:8080')
+    // Create the WebSocket connection using the environment variable
+    const ws = new WebSocket(wsEndpoint)
     setSocket(ws)
 
     ws.onopen = () => {
@@ -87,16 +90,23 @@ function App() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div
+      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+    >
       <h1>Tic Tac Toe</h1>
       {playerSymbol && <p>You are player {playerSymbol}</p>}
       {winner ? (
-        <h2>{winner === 'draw' ? 'Game is a draw!' : `Player ${winner} wins!`}</h2>
+        <h2>
+          {winner === 'draw' ? 'Game is a draw!' : `Player ${winner} wins!`}
+        </h2>
       ) : (
         <h2>Current Turn: {currentPlayer}</h2>
       )}
       <Board board={board} onCellClick={handleCellClick} />
-      <button onClick={resetGame} style={{ marginTop: '20px', padding: '10px 20px' }}>
+      <button
+        onClick={resetGame}
+        style={{ marginTop: '20px', padding: '10px 20px' }}
+      >
         Reset Game
       </button>
     </div>

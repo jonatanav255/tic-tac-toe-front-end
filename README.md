@@ -15,3 +15,7 @@
 # script to run the app for Production
 
 - npm run build
+
+
+
+docker buildx build --platform linux/amd64 -t jonatanav255/my-react-app:latest --push .
