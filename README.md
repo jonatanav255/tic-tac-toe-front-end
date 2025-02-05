@@ -19,3 +19,5 @@
 
 
 docker buildx build --platform linux/amd64 -t jonatanav255/my-react-app:latest --push .
+
+docker push jonatanav255/my-react-app:latest

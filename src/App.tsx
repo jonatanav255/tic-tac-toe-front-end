@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react'
 import Board from './components/Board'
 
 // Assuming you're using Vite, you can access environment variables via import.meta.env
+// const wsEndpoint = import.meta.env.VITE_WS_ENDPOINT || 'ws://localhost:8080'
 const wsEndpoint = import.meta.env.VITE_WS_ENDPOINT || 'ws://localhost:8080'
+console.log(wsEndpoint)
 
 type Player = 'X' | 'O'
 type Winner = Player | 'draw' | null
@@ -19,6 +21,8 @@ function App () {
   const [winner, setWinner] = useState<Winner>(null)
   const [playerSymbol, setPlayerSymbol] = useState<Player | null>(null)
   const [socket, setSocket] = useState<WebSocket | null>(null)
+
+  console.log("----------CONTAINER APPPPPP----------------------------")
 
   useEffect(() => {
     // Create the WebSocket connection using the environment variable
