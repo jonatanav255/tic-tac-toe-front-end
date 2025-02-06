@@ -3,7 +3,7 @@ import Board from './components/Board'
 
 // Assuming you're using Vite, you can access environment variables via import.meta.env
 // const wsEndpoint = import.meta.env.VITE_WS_ENDPOINT || 'ws://localhost:8080'
-const wsEndpoint = import.meta.env.VITE_WS_ENDPOINT || 'ws://localhost:8080'
+const wsEndpoint = import.meta.env.VITE_WS_ENDPOINT || 'wss://tictactoe.jonathan-dev.com'
 console.log(wsEndpoint)
 
 type Player = 'X' | 'O'
@@ -22,7 +22,7 @@ function App () {
   const [playerSymbol, setPlayerSymbol] = useState<Player | null>(null)
   const [socket, setSocket] = useState<WebSocket | null>(null)
 
-  console.log("----------CONTAINER APPPPPP----------------------------")
+  console.log("2----------CONTAINER APPPPPP----------------------------1")
 
   useEffect(() => {
     // Create the WebSocket connection using the environment variable
