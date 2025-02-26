@@ -109,7 +109,7 @@ function App () {
       <Board board={board} onCellClick={handleCellClick} />
       <button
         onClick={resetGame}
-        style={{ marginTop: '20px', padding: '10px 20px' }}
+        style={{ marginTop: '20px', padding: '50px 50px' }}
       >
         Reset Game
       </button>
