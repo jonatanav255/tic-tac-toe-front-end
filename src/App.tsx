@@ -4,7 +4,8 @@ import Board from './components/Board'
 // Assuming you're using Vite, you can access environment variables via import.meta.env
 // const wsEndpoint = import.meta.env.VITE_WS_ENDPOINT || 'ws://localhost:8080'
 // const wsEndpoint = import.meta.env.VITE_WS_ENDPOINT || 'https://api.tictactoe.jonathan-dev.com'
-const wsEndpoint = 'https://api.tictactoe.jonathan-dev.com'
+// const wsEndpoint = 'https://api.tictactoe.jonathan-dev.com'
+const wsEndpoint = 'https://tic-tac-toe-production-0a5b.up.railway.app/'
 console.log(wsEndpoint)
 
 type Player = 'X' | 'O'
