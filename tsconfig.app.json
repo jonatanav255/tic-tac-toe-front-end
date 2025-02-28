@@ -7,8 +7,10 @@
     "module": "ESNext",
     "skipLibCheck": true,
 
-    /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
